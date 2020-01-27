@@ -8,9 +8,8 @@ let db = new sql3.Database("./db/main.db", sql3.OPEN_READWRITE | sql3.OPEN_CREAT
 });
 
 db.run(`
-CREATE TABLE "weekends"(
-  "id" INT(11) NOT NULL,
-  "date" DATE NOT NULL,
-  PRIMARY KEY ("id")
+CREATE TABLE "weekends" (
+  "date_" DATE NOT NULL,
+  PRIMARY KEY ("date_")
 )
 `)
