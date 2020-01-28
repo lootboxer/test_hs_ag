@@ -8,6 +8,7 @@
       <!-- Чуть было сделал на квартал, но понял, что про fork библиотеки ничего не говорили -->
       <v-date-picker
       v-model="picker"
+      :picker-date.sync="pickerDate"
       multiple
       no-title
       >
@@ -25,7 +26,6 @@
           Reset
         </v-btn>
       </div>
-      {{days}}
     </v-app>
 
   </v-content>
@@ -40,32 +40,30 @@ export default {
     return {
       picker:[],
       overlay:false,
-      days:[]
+      pickerDate:"",
     }
   },
-  watch: {
-    overlay (val) {
-        val && setTimeout(() => {
-          this.overlay = false
-        }, 3000)}},
   methods:{
     saveHandler(){
       //!! TEMP 
       let onReq = this.picker.map(day=>{return {date:day,value:"true"}})
       saveDays(onReq)
     },
-    resetHandler:()=>{
-      console.log('reset')
+    resetHandler(){
+      this.picker = this.$store.getters.received
     }
   },
-  beforeMount(){
-    receiveDays("ads")
-    .then(r=>{
-      this.$store.dispatch('receive',r.data)
-      this.days=r.data
-    })
-  }
-
+  watch:{
+    pickerDate(){
+      this.overlay=true;
+      receiveDays(this.pickerDate)
+      .then(r=>{
+        this.$store.dispatch('receive',r.data)
+        this.picker=r.data
+        this.overlay=false
+      })
+    }
+  },
 }
 </script>
 

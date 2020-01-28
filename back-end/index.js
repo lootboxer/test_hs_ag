@@ -4,17 +4,14 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
-const writeDays = require('./lib/db').writeDays
+const {writeDays, readDaysCallback} = require('./lib/db')
 
 const app = express();
 
 app.use(cors())
 app.use(bodyParser.json())
 
-app.get("/dates",(req,res)=>{
-  // readDays(req.query)
-  res.json({text:"ITS OKEY"})
-})
+app.get("/dates",readDaysCallback)
 
 app.post("/dates/save",(req,res)=>{
   

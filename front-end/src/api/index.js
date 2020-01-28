@@ -15,7 +15,6 @@ export const receiveDays = function(months) {
 };
 
 export const saveDays = function(days){
-  console.log(days)
   return service({
     url:'/dates/save',
     method:"POST",
