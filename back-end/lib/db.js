@@ -36,5 +36,5 @@ exports.writeDaysCallBack = function (req,res){
     `, day, err=>console.log(err))
     }
   )
-  res.send("All ok")
+  res.json(weekends)
 };
