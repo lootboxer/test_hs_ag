@@ -44,12 +44,18 @@ export default {
     }
   },
   methods:{
-    saveHandler(){
-      //!! TEMP 
-      let onReq = this.picker.map(day=>{return {date:day,value:"true"}})
+    saveHandler() {
+      let onReq = [];
+      const {received} = this.$store.getters
+      // Can be more beauty...
+      let onWork = received.filter(day=>!this.picker.includes(day))
+      let onRelax = this.picker.filter(picked => !received.includes(picked))
+      onWork.forEach(date=>onReq.push({date,value:false}));
+      onRelax.forEach(date=>onReq.push({date,value:true}));
       saveDays(onReq)
+
     },
-    resetHandler(){
+    resetHandler() {
       this.picker = this.$store.getters.received
     }
   },

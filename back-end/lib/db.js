@@ -20,9 +20,9 @@ exports.readDaysCallback = function (req,res){
 }
 
 
-exports.writeDays = function (inputDates){
-  const weekends = inputDates.filter(day=>day.value).map(obj=>obj.date)
-  const onWorking = inputDates.filter(day=>!day.value).map(obj=>obj.date)
+exports.writeDaysCallBack = function (req,res){
+  const weekends = req.body.filter(day=>day.value).map(obj=>obj.date)
+  const onWorking = req.body.filter(day=>!day.value).map(obj=>obj.date)
   //TODO: except incorrect values (value:not true or false)
   //TODO: CHECK REGEX DATE 
   weekends.forEach(day => {
@@ -36,4 +36,5 @@ exports.writeDays = function (inputDates){
     `, day, err=>console.log(err))
     }
   )
+  res.send("All ok")
 };
