@@ -45,7 +45,6 @@ export default {
       isMultiple:"",
       picker:[],
       overlay:false,
-      firstPickerDate:'',
       pickerMonths:[],
       prevMonths:[]
     }
@@ -60,6 +59,9 @@ export default {
       onWork.forEach(date=>onReq.push({date,value:false}));
       onRelax.forEach(date=>onReq.push({date,value:true}));
       saveDays(onReq)
+      .then(r=>{
+        this.$store.dispatch('receive',this.picker)
+      })
 
     },
     resetHandler() {
