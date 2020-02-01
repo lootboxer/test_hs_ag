@@ -4,31 +4,6 @@
       <v-progress-circular indeterminate></v-progress-circular>
     </v-overlay>
   <div class="date-pickers">
-    <!-- <v-date-picker
-    next-icon=''
-    v-model="picker"
-    :picker-date.sync="firstPickerDate"
-    multiple
-    no-title
-    />
-
-    <v-date-picker
-    prev-icon=''
-    next-icon=''
-    v-model="picker"
-    :picker-date="monhtsArray[1]"
-    multiple
-    no-title
-    />
-
-    <v-date-picker
-    prev-icon=''
-    v-model="picker"
-    :picker-date="monhtsArray[2]"
-    multiple
-    no-title
-    >
-    </v-date-picker> -->
     <v-date-picker
     v-for="i in [0,1,2]"
     :key="'date-picker-'+i"
@@ -71,7 +46,8 @@ export default {
       picker:[],
       overlay:false,
       firstPickerDate:'',
-      pickerMonths:['','','']
+      pickerMonths:[],
+      prevMonths:[]
     }
   },
   methods:{
@@ -88,30 +64,55 @@ export default {
     },
     resetHandler() {
       this.picker = this.$store.getters.received
-    },
-    pickerDatesCounting(val,i){
-      let dateArray = val.split('-').map(el=>+el);
-      if(dateArray[1]>12){
-        dateArray[1]=1;
-        dateArray[0]++
-      } else{
-        dateArray[1]+i
+    }, 
+    normalizeDate(date){
+      // normalize of month [year,month]
+      if(date[1]>12){
+        date[0]++
+        date[1] = date[1]-12
+      } else if (date[1]<1){
+        date[0]--
+        date[1] = 12 - date[1]
       }
-      return dateArray.join('-')
-    }
+      return date
+    },
+    changeMonthInDates(dates,normalIndex,changes){
+      let arrDates = dates.map(el=>el.split('-').map(el=>+el))
+      let newDates = []
+      arrDates.forEach((date,index)=>{
+        if (index == normalIndex){
+          newDates[index]=this.normalizeDate(date);
+        } else {
+          date[1]=date[1]+changes
+          newDates[index]=this.normalizeDate(date)
+        }
+      })
+      return newDates
+    },
   },
-  computed:{
-    pickerMonths(val){
+  mounted: function () {
+    this.prevMonths=['2020-01','2020-02','2020-03'];
+    this.pickerMonths = this.prevMonths.slice(0)
+    this.$watch('pickerMonths', function (newVal) {
       this.overlay=true;
-      this.monhtsArray.map((month,i)=>this.pickerDatesCounting(val,i))
-      receiveDays(this.monhtsArray.join(','))
+      let newVals  = newVal.map(el=>+el.split('-')[1]);
+      let prevVals = this.prevMonths.map(el=>+el.split('-')[1]);
+      for(let key in newVals){
+        let changes = newVals[key]-prevVals[key]
+        if(changes !=0){
+          changes=(changes == 11)?-1:1
+          this.prevMonths= this.changeMonthInDates(newVal,key,changes).map(el=>el.join('-'))
+          this.pickerMonths = this.prevMonths.slice(0)
+        }
+      }
+      receiveDays(this.prevMonths.join(','))
       .then(r=>{
         this.$store.dispatch('receive',r.data)
         this.picker=r.data
         this.overlay=false
       })
-    }
-  },
+    }, {deep:true})
+  }
 }
 </script>
 

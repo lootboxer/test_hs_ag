@@ -3,21 +3,22 @@ const sql3 = require('sqlite3');
 let db = new sql3.Database("./db/main.db")
 
 exports.readDaysCallback = function (req,res){
-  req.query.months.split(',').forEach(month=>{
-    db.all(`
-      SELECT date_ FROM weekends 
-      WHERE 
-        date_ 
-      LIKE 
-        "${month}-__"
-        `, (err, rows)=>{
-      if (err){
-        console.error(err)
-      }
-      else {
-        res.json(rows.map(row=>row.date_))
-      }
-    })
+  let months = req.query.months.split(',')
+  db.all(`
+    SELECT date_ FROM weekends 
+    WHERE 
+      (date_ LIKE   "${months[0]}-%")
+    OR
+      (date_ LIKE   "${months[1]}-%")
+    OR
+      (date_ LIKE   "${months[2]}-%")
+    `, (err, rows)=>{
+    if (err){
+      console.error(err)
+    }
+    else {
+      res.json(rows.map(row=>row.date_))
+    }
   })
 }
 
