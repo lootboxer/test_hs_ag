@@ -15,4 +15,4 @@
 > npm i</br>npm run initdb</br>npm run start
 
 ## Result 
-![datePicker](/readme_images/front)
+![datePicker](/readme_images/front-end.jpg)
