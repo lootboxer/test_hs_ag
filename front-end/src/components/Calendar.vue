@@ -100,8 +100,8 @@ export default {
       for(let key in newVals){
         let changes = newVals[key]-prevVals[key]
         if(changes !=0){
-          changes=(changes == 11)?-1:1
-          this.prevMonths= this.changeMonthInDates(newVal,key,changes).map(el=>el.join('-'))
+          changes=((changes == 11)||(changes==-1))?-1:1
+          this.prevMonths= this.changeMonthInDates(newVal,key,changes).map(el=>el[0]+'-'+el[1].toString().padStart(2, "0"))
           this.pickerMonths = this.prevMonths.slice(0)
         }
       }
